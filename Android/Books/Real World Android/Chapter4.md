@@ -1,9 +1,49 @@
+## Mapping data to the domain
+
+```kotlin
+interface ApiMapper<E, D> {
+    fun mapToDomain(apiEntity: E): D
+}
+```
+
+Having all the mappers follow this interface gives you the advantage of decoupling
+the mapping. This is useful if you have a lot of mappers and want to make sure they
+all follow the same contract.
+
+```kotlin
+override fun mapToDomain(apiEntity: ApiAnimal):AnimalWithDetails {
+    return AnimalWithDetails(
+        id = apiEntity.id
+        ?: throw MappingException("Animal ID cannot be null"), // 1
+        name = apiEntity.name.orEmpty(), // 2
+        type = apiEntity.type.orEmpty(),
+        details = parseAnimalDetails(apiEntity), // 3
+        media = mapMedia(apiEntity),
+        tags = apiEntity.tags.orEmpty().map { it.orEmpty() },
+        adoptionStatus = parseAdoptionStatus(apiEntity.status),
+        publishedAt =
+        DateTimeUtils.parse(apiEntity.publishedAt.orEmpty()) //4
+)
+}
+```
+
+1. If the API entity doesn’t have an ID, the code throws a MappingException. You
+   need IDs to distinguish between entities, so you want the code to fail if they don’t
+   exist.
+
+2. If name in the API entity is null, the code sets the name in the domain entity to
+   empty. Should it, though? CanAnimalWithDetails entities have empty names?
+   That depends on the domain. In fact, mappers are a good place to search for
+   domain constraints. Anyway, for simplicity, assume an empty name is possible.
+
+
+
 ## Interceptors
 
 OKHttp lets you manipulate your requests and/or responses through interceptors,
 which let you monitor, change or even retry API calls.
 
-<img src="file:///C:/Users/azin.alizadeh/AppData/Roaming/marktext/images/2022-03-30-09-45-11-image.png" title="" alt="" data-align="center">
+![OkHttp Interceptors](resources/okhttp_interceptors.png)
 
 OkHttp allows two types of interceptors:
 
@@ -66,3 +106,14 @@ installing ApiModule here, you’re saying that any dependency it provides shoul
 as long as the app itself. Also, since each child component can access the
 dependencies of its parent, you’re ensuring that all other components can access
 ApiModule.
+
+### Defining dependencies
+
+- @Inject: Use in class constructors to inject code you own, such as the data mappers.
+
+- @Provides: Use in modules to inject code you don’t own, like any library instance.
+
+- @Binds: Use in modules to inject interface implementations when you don’t need
+  initialization code. You’ll see an example later.
+
+### 
