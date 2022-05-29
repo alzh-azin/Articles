@@ -51,7 +51,7 @@ from the database.
 data class CachedAnimalAggregate(
     @Embedded // 1
     val animal: CachedAnimalWithDetails,
-    @Relation(
+    @Relation( 
     parentColumn = "animalId", 
     entityColumn = "tag"
     )
@@ -61,12 +61,7 @@ data class CachedAnimalAggregate(
       }
 ```
 
-1. Use associateBy to create the many-to-many relationship with Room. You set it
-   to a Junction that takes the cross-reference class as a parameter. As you can see
-   from the entity relationship diagram, the cross-reference class is
-   CachedAnimalTagCrossRef.
-
-## Setting up the many-to-many relationship
+1. ## Setting up the many-to-many relationship
 
 you need to create a:
 
@@ -126,3 +121,37 @@ data class CachedAnimalTagCrossRef(
     val tag: String
 )
 ```
+
+## Another way of data mapping
+
+```kotlin
+@Entity(tableName = "photos")
+data class CachedPhoto(
+// ...
+) {
+   companion object {
+      fun fromDomain(
+          animalId: Long,
+          photo: Media.Photo): CachedPhoto { // HERE
+       val (medium, full) = photo
+       return CachedPhoto(
+          animalId = animalId,
+          medium = medium,
+          full = full)
+      }
+   }
+  // ...
+}
+```
+
+In this code, fromDomain returns a CachedPhoto instance, which it builds from a
+domain Photo and the corresponding animalId. It has to be a companion object
+function due to dependencies. To make it a class member function, you’d have to
+add it to Photo, which would make the domain aware of the data layer.
+
+You could also achieve the same result with an extension function, as long as it
+extends CachedPhoto. In the end, both options boil down to static functions.
+
+Cache models have toDomain and fromDomain functions, while API models only
+have toDomain. That’s because you won’t send anything to the API, so there’s no
+need to translate domain models into API DTOs.

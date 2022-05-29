@@ -36,8 +36,6 @@ override fun mapToDomain(apiEntity: ApiAnimal):AnimalWithDetails {
    That depends on the domain. In fact, mappers are a good place to search for
    domain constraints. Anyway, for simplicity, assume an empty name is possible.
 
-
-
 ## Interceptors
 
 OKHttp lets you manipulate your requests and/or responses through interceptors,
