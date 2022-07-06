@@ -62,3 +62,7 @@ but **getContext** and **getActivity** return null when that fragment is not att
 In short, if you want to get the host activity inside fragment’s lifecycle methods, it’s ok to use `requireActivity()` without checking null. If you want to use the activity outside the lifecycle, for example, IO callback, it's better to check null + check destroyed. If you are 200% sure that in your fragment’s lifecycle, activity is not null, use requireActivity() as it needs no **!!** notation inside code, otherwise put it inside the try-catch block to avoid Exception.
 
 
+
+Refrences
+
+https://medium.com/@faisaldeveloper493/difference-between-getactivity-and-requireactivity-80932efd9fb4
