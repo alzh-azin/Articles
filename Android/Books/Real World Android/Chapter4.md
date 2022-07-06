@@ -112,6 +112,6 @@ ApiModule.
 - @Provides: Use in modules to inject code you don’t own, like any library instance.
 
 - @Binds: Use in modules to inject interface implementations when you don’t need
-  initialization code. You’ll see an example later.
+  initialization code.
 
 ### 

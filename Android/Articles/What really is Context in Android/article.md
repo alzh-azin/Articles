@@ -12,8 +12,6 @@ Context is an abstract class, so it needs to have a subclass that implements its
 
 As shown below, another class called ContextWrapper simply uses the methods implemented by ContextImpl and delegates their call to its own subclasses. Now, to the part that really matters, how do Application, Activities and Services get their context?
 
-
-
 ![context.PNG](C:\Users\azin.alizadeh\Desktop\Learning\Android\Articles\What%20really%20is%20Context%20in%20Android\resources\context.PNG)
 
 ### Where do you come from, Context?
@@ -27,8 +25,6 @@ So, in an Android project, we have one Context for the Application class, one Co
 ### What can Contexts do for us?
 
 Activity Contexts are used in ways that are familiar to many of us. For example, they are used to start a new Activity via *startActivity(Intent)* and to inflate a layout via *inflate(Int, ViewGroup)*. Other use cases for Application and Service contexts are shown below.
-
-
 
 ![context usecase.PNG](C:\Users\azin.alizadeh\Desktop\Learning\Android\Articles\What%20really%20is%20Context%20in%20Android\resources\context%20usecase.PNG)
 
