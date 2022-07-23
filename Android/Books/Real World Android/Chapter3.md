@@ -7,11 +7,11 @@ your domain space along with the logic that manipulates it.
 
 - **entities:** Objects that model your domain space.
 
--  **value objects:** Another kind of object that models your domain space.
+- **value objects:** Another kind of object that models your domain space.
 
 - **interactors/use cases:** Logic to handle entities and/or value objects and produce a result.
 
--  **repository interfaces:** Define contracts for data source access.
+- **repository interfaces:** Define contracts for data source access.
 
 This layer encompasses the business logic of the app. Your business logic is one of
 the most important parts of your app, as it defines how the app works. The less you
@@ -24,7 +24,7 @@ such, they shouldn’t affect the domain layer at all.
 
 ### Do you really need a domain layer?
 
--  Keeping your code clean and easy to maintain by focusing the business logic in
+- Keeping your code clean and easy to maintain by focusing the business logic in
   one layer only. Single responsibility code is easier to manage.
 
 - Defining boundaries between code that implements app logic and code that has
@@ -36,7 +36,7 @@ such, they shouldn’t affect the domain layer at all.
 
 ### Entities & value objects
 
--  Entities have an ID that allows you to tell them apart. Their properties can
+- Entities have an ID that allows you to tell them apart. Their properties can
   change, but the ID always remains the same.
 
 - Value objects describe some aspect of an entity. They don’t have IDs, and if you

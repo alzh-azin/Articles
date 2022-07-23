@@ -123,4 +123,32 @@ content.viewTreeObserver.addOnPreDrawListener(
 
 ### Changing the Exit Animation
 
+You can’t change the launch animation, but you can get into the exit animation through the *SplashScreen API* and customize it.
+
+```kotlin
+splashScreen.setOnExitAnimationListener {
+    splashScreenView ->
+
+    val slideBack = ObjectAnimator.ofFloat(
+        splashScreenView.view,
+        View.TRANSLATION_X,
+        0f,
+        -splashScreenView.view.width.toFloat()
+    ).apply {
+        interpolator = DecelerateInterpolator()
+        duration = 800L
+        doOnEnd {
+            Log.d("TestSplash", "setupSplashScreen: ")
+            splashScreenView.remove()
+        }
+    }
+
+    slideBack.start()
+}
+```
+
+If you use an animated icon and need it to finish animating before dismissing the splash screen, ensure the exit animation isn’t triggered too early. Within the `OnExitAnimationListener` you can access the `splashScreenView.iconAnimationDuration` and`splashScreenView.iconAnimationStart` values and use them to determine whether enough time has passed since the icon animation has started to allow it to finish. If you don’t check, the splash screen will dismiss when your app is ready, and that might occur before your animation has finished.
+
+## Migrating Your Project
+
 
