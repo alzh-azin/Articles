@@ -1,3 +1,25 @@
+# Chapter 4: Data Layer - Network
+
+The data layer is where you put the code responsible for interacting with your data
+sources. An app can have multiple data sources, and they can change over time. For instance, you can migrate from a REST server to a GraphQL server, or from a Room database to a Realm database. These changes only matter to the data handling logic, and should not affect the code that needs the data.
+
+### The repository pattern
+
+The repository is just an abstraction over the way you access data. It creates a thin
+layer over data sources — a class that wraps up calls to the objects that do the heavy
+lifting. While this sounds a bit redundant, it has its purposes. It lets you:
+
+- Swap data sources without affecting the rest of the app. Swapping sources is rare,
+  but trust me, it happens. :]
+
+- Create the boundary between the data layer and the other layers that need to
+  operate on data.
+
+![Capture2.PNG](C:\Users\azin.alizadeh\Desktop\Learning\Android\Books\Real%20World%20Android\resources\Capture2.PNG)
+
+You can have as many repositories as you want. A popular choice is to have one
+repository per domain entity type.
+
 ## Mapping data to the domain
 
 ```kotlin
