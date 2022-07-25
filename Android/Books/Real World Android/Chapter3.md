@@ -37,16 +37,6 @@ such, they shouldn’t affect the domain layer at all.
 ### Entities & value objects
 
 - Entities have an ID that allows you to tell them apart. Their properties can
-  =======
-
-- Entities have an` ID` that allows you to tell them apart. Their properties can
-  
-  > > > > > > > 2fa4b624fd5a3bf6840353d71696576435021d9b
-  > > > > > > > change, but the ID always remains the same.
-
-- Value objects describe `some aspect of an entity`. They don’t have IDs, and if you
-  change one of their properties, you create a new value object. For this reason, they
-  should always be immutable.
 
 ### What should you model?
 

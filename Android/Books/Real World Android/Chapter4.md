@@ -20,6 +20,26 @@ lifting. While this sounds a bit redundant, it has its purposes. It lets you:
 You can have as many repositories as you want. A popular choice is to have one
 repository per domain entity type.
 
+### Network data models
+
+```kotlin
+@JsonClass(generateAdapter = true) //1
+data class ApiBreeds(
+    @field:Json(name = "primary") val primary: String?, //2
+    @field:Json(name = "secondary") val secondary: String?,
+    @field:Json(name = "mixed") val mixed: Boolean?,
+    @field:Json(name = "unknown") val unknown: Boolean?
+)
+```
+
+- This annotation decorates every class. The app uses Moshi to parse the JSON
+  from API responses. `This annotation lets Moshi know it can create an object of this type from JSON data`. `Moshi will also automagically create an adapter if you set generateAdapter to true. It’ll then use it to create an instance of the class`. Without this parameter, you’ll get a runtime error from Moshi, unless you create the adapter yourself.
+
+- There are two different things to notice here. First, the Moshi annotation maps
+  the JSON variable called primary to the code variable called primary. In this
+  case, you didn’t need the annotation because the names are the same. Still, it’s
+  there for consistency’s sake.` Second, you used a nullable type. Long story short, never trust your backend. :] Using nullable types ensures that even if something goes wrong and you get unexpected nullable values in the response, the app won’t crash.`
+
 ## Mapping data to the domain
 
 ```kotlin
@@ -55,8 +75,10 @@ override fun mapToDomain(apiEntity: ApiAnimal):AnimalWithDetails {
 
 2. If name in the API entity is null, the code sets the name in the domain entity to
    empty. Should it, though? CanAnimalWithDetails entities have empty names?
-   That depends on the domain. In fact, mappers are a good place to search for
-   domain constraints. Anyway, for simplicity, assume an empty name is possible.
+   `That depends on the domain.` `In fact, mappers are a good place to search for domain constraints.` Anyway, for simplicity, assume an empty name is possible.
+
+3. details is a value object, so `the code delegates its creation to an appropriate
+   method`. Clean code keeps responsibilities well separated.
 
 ## Interceptors
 
