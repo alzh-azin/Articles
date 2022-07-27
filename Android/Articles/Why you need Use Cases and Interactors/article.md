@@ -1,14 +1,10 @@
 # Why you need Use Cases/Interactors
 
-
-
-![Capture.PNG](C:\Users\azin.alizadeh\Desktop\Learning\Android\Articles\Why%20you%20need%20Use%20Cases%20and%20Interactors\Resources\Capture.PNG)
+![Capture.PNG](.\Resources\Capture.PNG)
 
 # Layered Architectures and the Application Layer
 
-
-
-![Capture1.PNG](C:\Users\azin.alizadeh\Desktop\Learning\Android\Articles\Why%20you%20need%20Use%20Cases%20and%20Interactors\Resources\Capture1.PNG)
+![Capture1.PNG](.\Resources\Capture1.PNG)
 
 ## Separation of concerns
 
@@ -30,7 +26,7 @@ In ***PresentationDomainDataLayering*** each package represents a different to
 
 Because Domain and Application cover the same topic and since the Application layer is “thin” they are often grouped together, however, there is still a separation at the class level and/or at a sub-package level:
 
-![1_aiQ9uRG1LtuiPu6fTcFCjw.png](C:\Users\azin.alizadeh\Desktop\Learning\Android\Articles\Why%20you%20need%20Use%20Cases%20and%20Interactors\Resources\1_aiQ9uRG1LtuiPu6fTcFCjw.png)
+![1_aiQ9uRG1LtuiPu6fTcFCjw.png](.\Resources\1_aiQ9uRG1LtuiPu6fTcFCjw.png)
 
 # Avoid “God” Presenters/ViewModels
 
@@ -318,12 +314,6 @@ Let’s now review the initial questions and let’s give them an answer.
 
 ***A: Not always, but for sure you need at least a repository method for each Use Case.***
 
-
-
-
-
 Refrence:
 
 https://proandroiddev.com/why-you-need-use-cases-interactors-142e8a6fe576
-
-
