@@ -103,7 +103,7 @@ here are two things to consider about NetworkUnavailableException:
    app stops using Retrofit in favor of a library that handles exceptions differently,
    the domain layer will change as well.
 
----
+### AuthenticationInterceptor
 
 ```kotlin
  override fun intercept(chain: Interceptor.Chain): Response
@@ -111,7 +111,34 @@ here are two things to consider about NetworkUnavailableException:
 
  Chain is the active chain of interceptors running when the request is ongoing
 
----
+#### Checking the token
+
+```kotlin
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val token = preferences.getToken()
+        val tokenExpirationTime = Instant.ofEpochSecond(preferences.getTokenExpirationTime())
+
+        val request = chain.request()
+
+//4     if (chain.request().headers[NO_AUTH_HEADER] != null) return
+        return chain.proceed(request)
+    }
+```
+
+4. This is a special case for requests that don’t need authentication. Say you have a
+   login request, for instance. You can add a custom header to it in the API interface
+   — like NO_AUTH_HEADER — then check if the header exists here. If so, you let the
+   request proceed. You won’t need this logic in this case, but it’s good to be aware
+   of it.
+
+You might find the access to preferences weird. Typically, a repository mediates
+between the different data sources, while they remain unaware of each other. `Its
+purpose in this layered architecture is to pass the other layers the data they need.`
+
+In this case, though, all the action happens inside the data layer itself. You’d be
+introducing `accidental complexity` by creating a `circular dependency` between the API and the repository code. Also, Preferences is an interface, so the
+implementation details are still decoupled. You must resist `convention triggered`
+over-engineering. :]
 
 ## Ordering the interceptors
 
@@ -158,4 +185,30 @@ ApiModule.
 - @Binds: Use in modules to inject interface implementations when you don’t need
   initialization code.
 
-### 
+```kotlin
+@Provides
+@Singleton
+fun provideApi(okHttpClient: OkHttpClient): PetFinderApi
+```
+
+@Provides works as it does in traditional Dagger. @Singleton, on the other hand, is
+the scope annotation for SingletonComponent. You can only add annotations to a
+module that match the scope of the component. If you try to use other scope
+annotations, you’ll get a compile-time error. You won’t get any errors if you try that
+now though, because your code doesn’t request PetFinderApi yet.
+
+there are also two important details about OKHttp that you have to consider:
+
+- Each OkHttp instance has its own thread pool, which is expensive to create.
+
+- OkHttp has a request cache on disk. Different OkHttp instances will have
+  different caches.
+
+### Key points
+
+- A data layer keeps your data I/O organized and in one place.
+
+- The repository pattern is great for abstracting data sources and providing a clear
+  boundary around the data layer.
+
+- 
