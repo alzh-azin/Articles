@@ -61,7 +61,7 @@ data class CachedAnimalAggregate(
       }
 ```
 
-1. ## Setting up the many-to-many relationship
+## Setting up the many-to-many relationship
 
 you need to create a:
 
@@ -106,7 +106,7 @@ val tag: String
 )
 ```
 
-1. While primary keys are indexed by default, you’re explicitly indexing tag, and
+1. `While primary keys are indexed by default`, you’re explicitly indexing tag, and
    tag only. You need to index both, because you use both to resolve the
    relationship. Otherwise, Room will complain.
 
@@ -147,7 +147,9 @@ data class CachedPhoto(
 In this code, fromDomain returns a CachedPhoto instance, which it builds from a
 domain Photo and the corresponding animalId. It has to be a companion object
 function due to dependencies. To make it a class member function, you’d have to
-add it to Photo, which would make the domain aware of the data layer.
+add it to Photo, `which would make the domain aware of the data layer.`
+
+
 
 You could also achieve the same result with an extension function, as long as it
 extends CachedPhoto. In the end, both options boil down to static functions.
