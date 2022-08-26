@@ -45,7 +45,6 @@ private fun setupUI() {
     val adapter = createAdapter() // 3
     setupRecyclerView(adapter)
 }
-
 ```
 
 There’s a good reason why the adapter value only exists in setupUI()’s scope. 
@@ -65,6 +64,122 @@ If you need the Adapter as a property of a Fragment, don’t forget to either:
 2. Null out the Adapter reference in the RecyclerView itself, before doing the same 
    for the binding.
 
+### Exposing the state
+
 ```kotlin
+val state: LiveData<AnimalsNearYouViewState> get() = _state // 1
+private val _state = MutableLiveData<AnimalsNearYouViewState>()
+private var currentPage = 0 // 2
+init {
+    _state.value = AnimalsNearYouViewState() // 3
+}
+
+// 4
+fun onEvent(event: AnimalsNearYouEvent) {
+    when (event) {
+        is AnimalsNearYouEvent.RequestInitialAnimalsList ->
+            loadAnimals()
+    }
+}
+```
+
+1. LiveData exposes the state to AnimalsNearYouFragment. LiveData is a simple 
+   UI data holder. You should avoid using it on any other part of your code, unless 
+   you want framework code in your domain layer! Using a reactive stream here — 
+   like RxJava’s BehaviorSubject, or Kotlin’s StateFlow and SharedFlow — would 
+   give you more control over both emissions and subscriptions. However, LiveData
+   fits in 80% of cases and gives you lifecycle-aware behavior for free. Also worth 
+   mentioning is the custom getter that returns _state, a private 
+   MutableLiveData. This avoids exposing a mutable state variable to the view.
+
+2. You need to track the page you’re on to request the right data. Knowing the exact 
+   page isn’t relevant for the UI state — unless it’s the last one, but that’s why you 
+   have noMoreAnimalsNearby. This lets you keep this property out of the exposed 
+   state
+
+3. You set _state to the initial state value
+
+4. You create the only public method in the ViewModel. AnimalsNearYouFragment
+   calls this method whenever it has an event to trigger
+
+### Triggering the initial API request
+
+```kotlin
+// 1
+private fun loadAnimals() {
+    if (state.value!!.animals.isEmpty()) { // 2
+        loadNextAnimalPage()
+    }
+}
+
+private fun loadNextAnimalPage() {
+    val errorMessage = "Failed to fetch nearby animals"
+    val exceptionHandler =
+        viewModelScope.createExceptionHandler(errorMessage)
+        { onFailure(it) } // 3
+    viewModelScope.launch(exceptionHandler) { // 4
+        // request more animals!
+    }
+}
+```
+
+1. The if condition checks if the state already has animals. Fragment will send the 
+   RequestInitialAnimalsList event every time it’s created. Without this 
+   condition, you’d make a request every time the configuration changes. This way, 
+   you avoid making unnecessary API requests. If there are no animals, though, you 
+   call loadNextAnimalPage().
+
+2. Yes, those double bangs are on purpose. Don’t be afraid of using them when you 
+   want to make sure that nullable values exist. The sooner your app crashes, the 
+   sooner you can fix the problem. Of course, don‘t use them without weighing the 
+   consequences. If, for some reason, you can’t use tests or don’t have a QA team 
+   testing the app, be more careful
+
+3. You create a CoroutineExceptionHandler through a custom 
+   createExceptionHandler extension function on viewModelScope. It takes in a 
+   lambda, which in turn takes a Throwable. You call onFailure() in the lambda, 
+   then pass it that same Throwable.
+
+4. You launch a coroutine on viewModelScope, passing in the 
+   CoroutineExceptionHandler to the launch extension function.
+
+CoroutineExceptionHandler is a global solution for exception handling that will 
+catch exceptions even from child coroutines. It only works if you set it on the parent
+coroutine. It’ll ignore exceptions if you set it on a child coroutine.
+
+A `CoroutineExceptionHandler` can be called from any thread. So, if `action` is supposed to  run in the main thread, you need to be careful and call this function on the a scope that  runs in the main thread, such as a `viewModelScope`.
+
+### Handling errors
+
+```kotlin
+private fun onFailure(failure: Throwable) {
+    when (failure) {
+        is NetworkException,
+        is NetworkUnavailableException -> {
+            _state.value = state.value!!.copy(
+                loading = false,
+                failure = Event(failure)
+            )
+        }
+        is NoMoreAnimalsException -> {
+            _state.value = state.value!!.copy(
+                noMoreAnimalsNearby = true,
+                failure = Event(failure)
+            )
+        }
+    }
+}
 
 ```
+
+1. For now, you’re only handling NetworkException and 
+   NetworkUnavailableException. The former is a new exception that avoids 
+   having Retrofit code in the presentation layer. Check requestMoreAnimals in 
+   PetFinderAnimalRepository and you’ll see that it throws a NetworkException
+   — a domain exception — when Retrofit’s HttpException occurs.
+
+2. Notice how you’re updating the state. You’re not mutating the object, but rather 
+   replacing it with an updated copy of itself. Data classes implement this copy
+   method, which really comes in handy her
+
+3. Again, you use Event to wrap Throwable so the UI reacts to it only once.
