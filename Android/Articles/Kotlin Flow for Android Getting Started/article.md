@@ -44,7 +44,6 @@ val namesFlow = flow {
     emit(name)
   }
 }
-
 ```
 
 ### Flow Operators
@@ -56,7 +55,7 @@ fun main() = runBlocking {
   namesFlow
       .map { name -> name.length }
       .filter { length -> length < 5 }
-    
+
   println()
 }
 ```
@@ -114,7 +113,6 @@ val forecasts: LiveData<List<ForecastViewState>> = weatherRepository
       throw Exception()
     }
     .asLiveData()
-
 ```
 
 Build and run the app. You'll notice that the app crashes! `catch()` catches only upstream exceptions. That is, it catches exceptions from all the operators above the catch. `catch()` doesn't catch any exception that occurs after the operator.
@@ -132,7 +130,6 @@ val forecasts: LiveData<List<ForecastViewState>> = weatherRepository
       // Log Error
     }
     .asLiveData()
-
 ```
 
 ## Searching Locations
@@ -159,7 +156,6 @@ private val _locations = queryChannel
     .catch {
       // Log Error
     }
-
 ```
 
 Here's what happens in this block of code:
