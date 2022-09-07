@@ -158,4 +158,4 @@ Like `SharedFlow` can replace `BroadcastChannel` completely, `StateFlow` c
 
 #### Reference:
 
-[Reactive Streams on Kotlin: SharedFlow and StateFlow]()
+[Reactive Streams on Kotlin: SharedFlow and StateFlow]([Reactive Streams on Kotlin: SharedFlow and StateFlow | raywenderlich.com](https://www.raywenderlich.com/22030171-reactive-streams-on-kotlin-sharedflow-and-stateflow#toc-anchor-010))
