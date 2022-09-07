@@ -25,7 +25,7 @@ public fun <T> MutableSharedFlow(
 
 #### Default Behavior
 
-![replay-0-extraBuffer-0.gif](..\resources\replay-0-extraBuffer-0.gif)
+![replay-0-extraBuffer-0.gif](../resources/replay-0-extraBuffer-0.gif)
 
 1. This shared flow has three events and two subscribers. The first event is emitted when there are no subscribers yet, so it gets lost forever.
 2. By the time the shared flow emits the second event, it already has one subscriber, which gets said event.
