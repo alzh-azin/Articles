@@ -35,8 +35,6 @@ public fun <T> MutableSharedFlow(
 
 #### With Replay
 
-
-
 ![replay-1-extraBuffer-0.gif](C:\Users\azin.alizadeh\Desktop\Learning\Android\Articles\resources\replay-1-extraBuffer-0.gif)
 
 1. When the shared flow reaches the first event without any active subscribers, it doesn’t suspend anymore. With `replay = 1`, there’s now a total buffer size of one. As such, the flow buffers the first event and keeps going.
@@ -50,9 +48,7 @@ public fun <T> MutableSharedFlow(
 
 The process is similar with `extraBufferCapacity`, but without the replay-like behavior. This third example shows a shared flow with both `extraBufferCapacity = 1` and `onBufferOverflow = BufferOverflow.DROP_OLDEST`:
 
-
-
-![replay-0-extraBuffer-1.gif](C:\Users\azin.alizadeh\Desktop\Learning\Android\Articles\resources\replay-0-extraBuffer-1.gif)
+![replay-0-extraBuffer-1.gif](..\resources\replay-0-extraBuffer-1.gif)
 
 1. The behavior is the same at first: With a suspended subscriber and a total buffer size of one, the shared flow buffers the first event.
 2. The different behavior starts on the second event emission. With `onBufferOverflow = BufferOverflow.DROP_OLDEST`, the shared flow *drops the first event*, buffers the second one and carries on. Also, notice how the second subscriber *does not* get a copy of the buffered event: Remember, this shared flow has `extraBufferCapacity = 1`, but `replay = 0`.
@@ -66,8 +62,6 @@ You want the shared flow to emit no matter which screen you’re in, so you can�
 ```kotlin
 private val sharedViewModel: CoinsSharedViewModel
  by activityViewModels { CoinsSharedViewModelFactory }
-
-
 ```
 
 ### Collecting the SharedFlow
@@ -81,7 +75,6 @@ viewLifecycleOwner.lifecycleScope.launchWhenStarted { // 1
     }
   }
 }
-
 ```
 
 1. The coroutine is scoped to the `View` instead of the `Fragment`. This ensures the coroutine is alive only while the `View` is alive, even if the `Fragment` outlives it. The code creates the coroutine with `launchWhenStarted`, instead of the most common `launch`. This way, the coroutine launches only when the lifecycle is at least in the `STARTED` state, suspends when it’s at least in the `STOPPED` state and gets canceled when the scope is destroyed. Using `launch` here can lead to potential crashes, as the coroutine will keep processing events even in the background.
@@ -105,7 +98,6 @@ val shared = MutableSharedFlow(
 )
 shared.tryEmit(InitialState()) // emit the initial value
 val state = shared.distinctUntilChanged() // get StateFlow-like behavior
-
 ```
 
 The code above creates a shared flow that emits the *latest value only* to any new subscribers. Due to that `distinctUntilChanged` at the bottom, it’ll only emit any value if it’s different from the previous one. This is exactly what a state flow does, which makes it great for holding and handling state.
@@ -139,7 +131,6 @@ val newState = mutableState.value
 newState.name = "Marc"
 
 mutableState.value = newState
-
 ```
 
 In this case, the state flow won’t emit the new value. Because the referenced object is the same, the equality comparison will return true, so the flow will assume it’s the same state.
@@ -157,7 +148,6 @@ val mutableState = MutableStateFlow<State>(State())
 // ...
 
 mutableState.value = State(name = "Marc")
-
 ```
 
 This way, the state flow will properly emit a state update. Immutability saves the day once again. :]
