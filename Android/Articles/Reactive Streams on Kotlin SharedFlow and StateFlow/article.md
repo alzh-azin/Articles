@@ -35,7 +35,7 @@ public fun <T> MutableSharedFlow(
 
 #### With Replay
 
-![replay-1-extraBuffer-0.gif](C:\Users\azin.alizadeh\Desktop\Learning\Android\Articles\resources\replay-1-extraBuffer-0.gif)
+![replay-1-extraBuffer-0.gif](../resources/replay-1-extraBuffer-0.gif)
 
 1. When the shared flow reaches the first event without any active subscribers, it doesn’t suspend anymore. With `replay = 1`, there’s now a total buffer size of one. As such, the flow buffers the first event and keeps going.
 2. When it reaches the second event, there’s no more room in the buffer, so it suspends.
@@ -48,7 +48,7 @@ public fun <T> MutableSharedFlow(
 
 The process is similar with `extraBufferCapacity`, but without the replay-like behavior. This third example shows a shared flow with both `extraBufferCapacity = 1` and `onBufferOverflow = BufferOverflow.DROP_OLDEST`:
 
-![replay-0-extraBuffer-1.gif](..\resources\replay-0-extraBuffer-1.gif)
+![replay-0-extraBuffer-1.gif](../resources/replay-0-extraBuffer-1.gif)
 
 1. The behavior is the same at first: With a suspended subscriber and a total buffer size of one, the shared flow buffers the first event.
 2. The different behavior starts on the second event emission. With `onBufferOverflow = BufferOverflow.DROP_OLDEST`, the shared flow *drops the first event*, buffers the second one and carries on. Also, notice how the second subscriber *does not* get a copy of the buffered event: Remember, this shared flow has `extraBufferCapacity = 1`, but `replay = 0`.
