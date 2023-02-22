@@ -56,3 +56,107 @@ fun ButtonRow() {
 ```
 
 The calls to `StartScreen`, `MiddleScreen`, and `EndScreen` might happen in any order. This means you can't, for example, have `StartScreen()` set some global variable (a side-effect) and have `MiddleScreen()` take advantage of that change. Instead, each of those functions needs to be self-contained.
+
+### Composable functions can run in parallel
+
+Compose can optimize recomposition by running composable functions in parallel. This lets Compose take advantage of multiple cores, and run composable functions not on the screen at a lower priority.
+
+This optimization means a composable function might execute within a pool of background threads. If a composable function calls a function on a `ViewModel`, Compose might call that function from several threads at the same time.
+
+To ensure your application behaves correctly, all composable functions should have no side-effects. Instead, trigger side-effects from callbacks such as `onClick` that always execute on the UI thread.
+
+```kotlin
+@Composable
+fun ListComposable(myList: List<String>) {
+    Row(horizontalArrangement = Arrangement.SpaceBetween) {
+        Column {
+            for (item in myList) {
+                Text("Item: $item")
+            }
+        }
+        Text("Count: ${myList.size}")
+    }
+}
+```
+
+This code is side-effect free, and transforms the input list to UI. This is great code for displaying a small list. However, if the function writes to a local variable, this code will not be thread-safe or correct:
+
+```kotlin
+@Composable
+@Deprecated("Example with bug")
+fun ListWithBug(myList: List<String>) {
+    var items = 0
+
+    Row(horizontalArrangement = Arrangement.SpaceBetween) {
+        Column {
+            for (item in myList) {
+                Text("Item: $item")
+                items++ // Avoid! Side-effect of the column recomposing.
+            }
+        }
+        Text("Count: $items")
+    }
+}
+```
+
+In this example, `items` is modified with every recomposition. That could be every frame of an animation, or when the list updates. Either way, the UI will display the wrong count. Because of this, writes like this are not supported in Compose; by prohibiting those writes, we allow the framework to change threads to execute composable lambdas.
+
+### Recomposition skips as much as possible
+
+When portions of your UI are invalid, Compose does its best to recompose just the portions that need to be updated. This means it may skip to re-run a single Button's composable without executing any of the composables above or below it in the UI tree.
+
+```kotlin
+/**
+ * Display a list of names the user can click with a header
+ */
+@Composable
+fun NamePicker(
+    header: String,
+    names: List<String>,
+    onNameClicked: (String) -> Unit
+) {
+    Column {
+        // this will recompose when [header] changes, but not when [names] changes
+        Text(header, style = MaterialTheme.typography.h5)
+        Divider()
+
+        // LazyColumn is the Compose version of a RecyclerView.
+        // The lambda passed to items() is similar to a RecyclerView.ViewHolder.
+        LazyColumn {
+            items(names) { name ->
+                // When an item's [name] updates, the adapter for that item
+                // will recompose. This will not recompose when [header] changes
+                NamePickerItem(name, onNameClicked)
+            }
+        }
+    }
+}
+
+/**
+ * Display a single name the user can click.
+ */
+@Composable
+private fun NamePickerItem(name: String, onClicked: (String) -> Unit) {
+    Text(name, Modifier.clickable(onClick = { onClicked(name) }))
+}
+```
+
+Each of these scopes might be the only thing to execute during a recomposition. Compose might skip to the `Column` lambda without executing any of its parents when the `header` changes. And when executing `Column`, Compose might choose to skip the `LazyColumn`'s items if `names` didn't change.
+
+Again, executing all composable functions or lambdas should be side-effect free. When you need to perform a side-effect, trigger it from a callback.
+
+### Recomposition is optimistic
+
+Recomposition starts whenever Compose thinks that the parameters of a composable might have changed. Recomposition is *optimistic,* which means Compose expects to finish recomposition before the parameters change again. If a parameter *does* change before recomposition finishes, Compose might cancel the recomposition and restart it with the new parameter.
+
+When recomposition is canceled, Compose discards the UI tree from the recomposition. If you have any side-effects that depend on the UI being displayed, the side-effect will be applied even if composition is canceled. This can lead to inconsistent app state.
+
+Ensure that all composable functions and lambdas are idempotent and side-effect free to handle optimistic recomposition.
+
+### Composable functions might run quite frequently
+
+In some cases, a composable function might run for every frame of a UI animation. If the function performs expensive operations, like reading from device storage, the function can cause UI jank.
+
+For example, if your widget tried to read device settings, it could potentially read those settings hundreds of times a second, with disastrous effects on your app's performance.
+
+If your composable function needs data, it should define parameters for the data. You can then move expensive work to another thread, outside of composition, and pass the data to Compose using `mutableStateOf` or `LiveData`.
