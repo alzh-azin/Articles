@@ -12,7 +12,7 @@ Material 3 represents elevation mainly using tonal color overlays. This is a new
 
 
 
-![m3-elevation.png]([C:\Users\Azin\Desktop\Material%203\m3-elevation.png](https://raw.githubusercontent.com/alzh-azin/Learning/master/Android/categories/Material%20You/Material%20Design%203/1.PNG))
+![m3-elevation.png](https://raw.githubusercontent.com/alzh-azin/Learning/master/Android/categories/Material%20You/Material%20Design%203/1.PNG)
 
 Elevation overlays in dark themes have also changed to tonal color overlays in Material 3. The overlay color comes from the primary color slot.
 
