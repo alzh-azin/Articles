@@ -12,11 +12,11 @@ Material 3 represents elevation mainly using tonal color overlays. This is a new
 
 
 
-![m3-elevation.png](C:\Users\Azin\Desktop\Material%203\m3-elevation.png)
+![m3-elevation.png]([C:\Users\Azin\Desktop\Material%203\m3-elevation.png](https://raw.githubusercontent.com/alzh-azin/Learning/master/Android/categories/Material%20You/Material%20Design%203/1.PNG))
 
 Elevation overlays in dark themes have also changed to tonal color overlays in Material 3. The overlay color comes from the primary color slot.
 
-![m3-surface.png](C:\Users\Azin\Desktop\Material%203\m3-surface.png)
+![m3-surface.png]([C:\Users\Azin\Desktop\Material%203\m3-surface.png](https://raw.githubusercontent.com/alzh-azin/Learning/master/Android/categories/Material%20You/Material%20Design%203/2.PNG))
 
 The M3 [Surface](https://developer.android.com/reference/kotlin/androidx/compose/material/package-summary#Surface(androidx.compose.ui.Modifier,androidx.compose.ui.graphics.Shape,androidx.compose.ui.graphics.Color,androidx.compose.ui.graphics.Color,androidx.compose.foundation.BorderStroke,androidx.compose.ui.unit.Dp,kotlin.Function0)) — the backing composable behind most M3 components — includes support for both tonal and shadow elevation:
 
