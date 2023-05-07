@@ -79,12 +79,14 @@ Classes in this layer are commonly called *use cases* or *interactors*. Each 
 
 - [Dependency injection (DI)](https://developer.android.com/training/dependency-injection): Dependency injection allows classes to define their dependencies without constructing them. At runtime, another class is responsible for providing these dependencies.
 
-## General best practices
 
-**Don't store data in app components.**
 
-Avoid designating your app's entry points—such as activities, services, and broadcast receivers—as sources of data. Instead, they should only coordinate with other components to retrieve the subset of data that is relevant to that entry point. Each app component is rather short-lived, depending on the user's interaction with their device and the overall current health of the system.
+## Benefits of Architecture
 
-**Reduce dependencies on Android classes.**
+Having a good Architecture implemented in your app brings a lot of benefits to the project and engineering teams:
 
-Your app components should be the only classes that rely on Android framework SDK APIs such as [`Context`](https://developer.android.com/reference/android/content/Context), or [`Toast`](https://developer.android.com/guide/topics/ui/notifiers/toasts). Abstracting other classes in your app away from them helps with testability and reduces [coupling](https://en.wikipedia.org/wiki/Coupling_(computer_programming)) within your app.
+- It improves the maintainability, quality and robustness of the overall app.
+- It allows the app to scale. More people and more teams can contribute to the same codebase with minimal code conflicts.
+- It helps with onboarding. As Architecture brings consistency to your project, new members of the team can quickly get up to speed and be more efficient in less amount of time.
+- It is easier to test. A good Architecture encourages simpler types which are generally easier to test.
+- Bugs can be investigated methodically with well defined processes.
