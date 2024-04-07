@@ -1,7 +1,5 @@
 # The Depenedency Rule
 
-
-
 ![Capture1.PNG](C:\Users\azin.alizadeh\Desktop\Learning\Android\Books\Real%20World%20Android\resources\Capture1.PNG)
 
 A software architecture rule that specifies the relationship between layers, namely that an inner layer should never rely on anything from an outer layer.

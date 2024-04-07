@@ -1,0 +1,4 @@
+- Every fragment get their theme from their parent activity
+- We anotate an object with @Volatile when it will be used by multiple threads
+- **ServiceLocator** is an singleton class whose porpuse is to provide dependencies, both for regular and test code. In other word, ServiceLocator is an alternative for dependency injection.
+- 

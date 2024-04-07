@@ -37,51 +37,27 @@ when you want to test LiveData, it is recommended to follow two steps:
 
 There are some reasons for why testing repository is hard:
 
-1.  You need to deal with thinking about creating and managing a database to execute even the simplest test for the repository.
+1. You need to deal with thinking about creating and managing a database to execute even the simplest test for the repository.
 
 2. Some part of the code might take a long time because of network calling or even fails occasionally because of network error.  You might unintentionally create long running, flaky tests.
 
 3. Sometimes your code might test another functionality that is not in the repository. It means maybe you are testing a functionality that is in the local datasource or is a network calling response and maybe the reason of failing the tests is because there are some issues in the local datasource or remote datasource.
 
-> Flaky tests are tests when you run repeatedly on a specific code, sometimes pass and sometimes fail. 
+> Flaky tests are tests that when you run repeatedly on a specific code, sometimes pass and sometimes fail. 
 
+**You should remember when you want to test some function or class, you should test only that function or class not other functionalities that your code is depends on**
 
+### tutorial 2, Section 6
 
+> Unit test should test only the class or the function you are interested in. This is known as testing in 'isolation', where you only test your isolate unit.
 
+For example, for testing repository, you shouldn't test your remote data source or local data source. Therefore for your repository, you will create a fake remote and local data sources and use dependency injection to apply it in your repository.
 
+> Integration tests test interaction between several classes to make sure all the classes works together properly and they behave as expected.
 
+###### ServiceLocator Pattern
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+This pattern is alternative to Dependency Injection. Using ServiceLocator pattern, we create a singleton pattern called **ServiceLocator**. The ServiceLocator whose porpuse is to provide dependencies both for regular and test code.
 
 -----------------
 
@@ -90,7 +66,3 @@ There are some reasons for why testing repository is hard:
 - What is instantExecutorRule and why should we use it?
 
 - What is Robolectric?
-
-
-
-

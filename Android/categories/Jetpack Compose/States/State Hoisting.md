@@ -52,8 +52,6 @@ fun OnboardingScreen(
 
 By passing a function and not a state to `OnboardingScreen` we are making this composable more reusable and protecting the state from being mutated by other composables. In general, it keeps things simple.
 
-
-
 Reference:
 
 https://developer.android.com/
