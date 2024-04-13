@@ -37,5 +37,3 @@ Both used to create a `ProvidableCompositionLocal` but they differ in how they h
 2. `staticCompositionLocalOf`: this is used when the provided value is not expected to change, or change very infrequently. When the provided value is changes, the entire content of the `CompositionLocalProvider` will be recomposed. This makes `CompositionLocalProvider` more efficient when the provided value is highly unlikely to change.
 
 
-
-
